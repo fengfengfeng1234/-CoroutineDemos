@@ -11,5 +11,8 @@ data class ApiResponse<T>(val errorCode: Int, val errorMsg: String, val data: T)
     override fun getResponseData() = data
 
     override fun getResponseMsg() = errorMsg
+    override fun toString(): String {
+        return "ApiResponse(errorCode=$errorCode, errorMsg='$errorMsg', data=$data)"
+    }
 
 }

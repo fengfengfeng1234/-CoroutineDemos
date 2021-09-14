@@ -3,6 +3,7 @@ package com.medi.comm.network.result
 import android.util.Log
 import com.kotlinstate.coroutinehttpsimple.ui.http.request.ApiResponse
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.handleCoroutineException
 import me.hgj.jetpackmvvm.demo.data.repository.request.BusinessException
 import me.hgj.jetpackmvvm.demo.data.repository.request.NetException
 import me.hgj.jetpackmvvm.demo.data.repository.request.ResultCode
@@ -19,7 +20,7 @@ import javax.net.ssl.SSLException
 suspend inline fun <reified T> Deferred<ApiResponse<T>>.awaitOrError(): Result<ApiResponse<T>> {
     return try {
         val result = await()
-        if (result.errorCode != 0) {
+        if (result.errorCode == 0) {
             //业务异常
             var exception = BusinessException(result.errorCode, result.errorMsg)
             return Result.of(getErrorMessage(exception))

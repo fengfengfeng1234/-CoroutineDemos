@@ -1,4 +1,4 @@
-package com.hencoder.coroutinescamp
+package com.hencoder.coroutinescamp.statusMachine
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

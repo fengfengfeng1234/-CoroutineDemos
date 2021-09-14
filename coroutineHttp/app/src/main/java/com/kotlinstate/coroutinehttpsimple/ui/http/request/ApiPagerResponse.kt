@@ -28,4 +28,9 @@ data class ApiPagerResponse<T>(
      * 是否还有更多数据
      */
     fun hasMore() = !over
+    override fun toString(): String {
+        return "ApiPagerResponse(datas=$datas, curPage=$curPage, offset=$offset, over=$over, pageCount=$pageCount, size=$size, total=$total)"
+    }
+
+
 }

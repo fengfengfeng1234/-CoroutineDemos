@@ -1,4 +1,4 @@
-package com.hencoder.coroutinescamp;
+package com.hencoder.coroutinescamp.statusMachine;
 
 /**
  * author: taolipeng

@@ -11,6 +11,7 @@ class Result<T> {
         private set
      var error: NetException?=null
         private set
+
     fun initSuc(value:T):Result<T>{
         this.value=value
         return this

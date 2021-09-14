@@ -34,4 +34,8 @@ data class AriticleResponse(
     var type: Int,
     var userId: Int,
     var visible: Int,
-    var zan: Int) : Parcelable
+    var zan: Int) : Parcelable {
+    override fun toString(): String {
+        return "AriticleResponse(apkLink='$apkLink', author='$author', chapterId=$chapterId, chapterName='$chapterName', collect=$collect, courseId=$courseId, desc='$desc', envelopePic='$envelopePic', fresh=$fresh, id=$id, link='$link', niceDate='$niceDate', origin='$origin', prefix='$prefix', projectLink='$projectLink', publishTime=$publishTime, superChapterId=$superChapterId, superChapterName='$superChapterName', shareUser='$shareUser', title='$title', type=$type, userId=$userId, visible=$visible, zan=$zan)"
+    }
+}

@@ -1,18 +1,23 @@
 package com.kotlinstate.coroutinehttpsimple.ui.main
 
-import androidx.lifecycle.ViewModelProvider
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.kotlinstate.coroutinehttpsimple.HttpCanCelActivity
 import com.kotlinstate.coroutinehttpsimple.R
 import com.kotlinstate.coroutinehttpsimple.ui.http.apiService
 import com.medi.comm.network.result.awaitOrError
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-
+import kotlinx.coroutines.*
+import java.lang.Exception
+//   返回多个参数  解构声明  （Destructuring declaration) 请求1
 class MainFragment : Fragment() {
 
     companion object {
@@ -51,14 +56,48 @@ class MainFragment : Fragment() {
             this,
             ViewModelProvider.NewInstanceFactory()
         ).get(MainViewModel::class.java)
-        viewModel.requestGlobal()
-        viewModel.requestHomeData()
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            val (result3, message3) = async {
-                apiService.getProjecTitle()
-            }.awaitOrError()
+
+
+        view?.findViewById<Button>(R.id.jumpActFinish)?.setOnClickListener {
+            var intent = Intent(activity, HttpCanCelActivity::class.java);
+            startActivity(intent)
         }
+        view?.findViewById<Button>(R.id.ordinaryNetworkBt)?.setOnClickListener {
+            requestSingle()
+        }
+
+        content = view?.findViewById<TextView>(R.id.content)!!
+
+    }
+
+
+    val handler = CoroutineExceptionHandler { _, exception ->
+        Log.e("MainFragment", "CoroutineExceptionHandler got $exception")
+    }
+
+    lateinit var content: TextView
+
+    /**
+     * 并发请求
+     */
+    private fun requestSingle() {
+        lifecycleScope.launch(handler) {
+
+            val req1 = async {
+                apiService.getAritrilList(0)
+            }
+
+
+            val req2 = async {
+                apiService.getBanner()
+            }
+
+            req1.awaitOrError()
+            req2.awaitOrError()
+
+        }
+
     }
 
 }
