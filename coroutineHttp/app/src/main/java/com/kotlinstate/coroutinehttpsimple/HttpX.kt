@@ -19,4 +19,8 @@ object HttpX : BaseRepository() {
     }
 
 
+    suspend fun getTest(): Result<String> {
+        return Result.of("xx")
+    }
+
 }

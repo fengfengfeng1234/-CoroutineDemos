@@ -42,62 +42,56 @@ class HttpCanCelActivity : AppCompatActivity() {
             httpJob=  lifecycleScope.launch {
 
                 val (result, message) = HttpX.getBanner()
-                delay(3000)
-                val (result2, message2) = HttpX.getProjecTitle()
 
 
-//                message?.composeException { _, _, message ->
-//                    content.text = "异常 $message "
-//                } ?: kotlin.run {
-//                    content.text = "正常返回 = ${result.toString()}"
-//                }
-//
-//
+                message?.composeException { _, _, message ->
+                    content.text = "异常 $message "
+                } ?: kotlin.run {
+                    content.text = "正常返回 = ${result.toString()}"
+                }
 //                message2?.composeException { _, _, message ->
 //                    content.text = "异常 $message "
 //                } ?: kotlin.run {
 //                    content.text = "正常返回 = ${result.toString()}"
 //                }
-
-
             }
         }
-        findViewById<TextView>(R.id.parallelBt).setOnClickListener {
-            httpJob = lifecycleScope.launch {
-                delay(3000)
-                var result1 = async {
-                    HttpX.getBanner()
-                }
-                var result2 = async {
-                    HttpX.getProjecTitle()
-                }
+//        findViewById<TextView>(R.id.parallelBt).setOnClickListener {
+//            httpJob = lifecycleScope.launch {
+//                delay(3000)
+//                var result1 = async {
+//                    HttpX.getBanner()
+//                }
+//                var result2 = async {
+//                    HttpX.getProjecTitle()
+//                }
+//
+//
+//                /**
+//                 * 并发优势所在
+//                 */
+//                var (rsp1, msg) = result1.await()
+//                var (rsp2, msg2) = result2.await()
+//
+//                msg?.composeException { _, _, message ->
+//                    content.text = "异常 $message "
+//                } ?: kotlin.run {
+//                    content.text = "正常返回 = ${rsp1.toString()}"
+//                }
+//
+//                msg2?.composeException { _, _, message ->
+//                    content.text = "异常 $message "
+//                } ?: kotlin.run {
+//                    content.text = "正常返回 = ${rsp2.toString()}"
+//                }
+//
+//
+//            }
+//        }
 
-
-                /**
-                 * 并发优势所在
-                 */
-                var (rsp1, msg) = result1.await()
-                var (rsp2, msg2) = result2.await()
-
-                msg?.composeException { _, _, message ->
-                    content.text = "异常 $message "
-                } ?: kotlin.run {
-                    content.text = "正常返回 = ${rsp1.toString()}"
-                }
-
-                msg2?.composeException { _, _, message ->
-                    content.text = "异常 $message "
-                } ?: kotlin.run {
-                    content.text = "正常返回 = ${rsp2.toString()}"
-                }
-
-
-            }
-        }
-
-        findViewById<Button>(R.id.cancelBt).setOnClickListener {
-            httpJob?.cancel()
-        }
+//        findViewById<Button>(R.id.cancelBt).setOnClickListener {
+//            httpJob?.cancel()
+//        }
 
 
     }
@@ -105,89 +99,40 @@ class HttpCanCelActivity : AppCompatActivity() {
     /**
      *  绑定生命周期 请求
      */
-    private fun requestBindLife() {
-        lifecycleScope.launch {
-            Log.e("HttpCanCel", "延迟 网络-------requestBindLife 1")
-            delay(3000)
-            Log.e("HttpCanCel", "延迟 网络-------requestBindLife 2")
-            val (result3, message3) = async {
-                apiService.getProjecTitle()
-            }.awaitOrError()
-        }
-    }
+//    private fun requestBindLife() {
+//        lifecycleScope.launch {
+//            Log.e("HttpCanCel", "延迟 网络-------requestBindLife 1")
+//            delay(3000)
+//            Log.e("HttpCanCel", "延迟 网络-------requestBindLife 2")
+//            val (result3, message3) = async {
+//                apiService.getProjecTitle()
+//            }.awaitOrError()
+//        }
+//    }
 
     /**
      *  全局网络请求
      */
-    private fun requestGlobal() {
-        // 全局写法
-        GlobalScope.launch {
-            Log.e("HttpCanCel", "延迟 网络-------requestGlobal 1")
-            delay(3000)
-            Log.e("HttpCanCel", "延迟 网络-------requestGlobal 2")
-            val (result3, message3) = async {
-                apiService.getBanner()
-            }.awaitOrError()
-        }
-    }
+//    private fun requestGlobal() {
+//        // 全局写法
+//        GlobalScope.launch {
+//            Log.e("HttpCanCel", "延迟 网络-------requestGlobal 1")
+//            delay(3000)
+//            Log.e("HttpCanCel", "延迟 网络-------requestGlobal 2")
+//            val (result3, message3) = async {
+//                apiService.getBanner()
+//            }.awaitOrError()
+//        }
+//    }
 
 
 }
 
-private suspend fun <T> Deferred<T>.awaitOrError(): Any {
-
-    val result = await()
-
-    return Result.of(result)
-
-}
 
 
-fun <T> CoroutineScope.asyncWithCatch1(block: suspend CoroutineScope.() -> T): Deferred<T> {
-    val handler = CoroutineExceptionHandler { _, exception ->
-        Log.e("MainFragment", "CoroutineExceptionHandler got $exception")
-    }
-    return async(handler) {
-        block()
-    }
-}
-
-fun <T> CoroutineScope.asyncWithCatch(block: suspend CoroutineScope.() -> T): CatchableDeferred<T> {
-    var errHandler = ErrorHandlerWrapper()
-    val handler = CoroutineExceptionHandler { _, exception ->
-        Log.e("MainFragment", "CoroutineExceptionHandler got $exception")
-    }
-    return CatchableDeferred(
-        async(handler) { block() },
-        errHandler
-    )
-}
-
-class ErrorHandlerWrapper {
-    var handler: ((Throwable) -> Unit)? = null;
-    operator fun invoke(throwable: Throwable) {
-        handler?.invoke(throwable) ?: throw throwable
-    }
-}
-
-class CatchableDeferred<T>(
-    private val target: Deferred<T>,
-    private val errorCatcher: ErrorHandlerWrapper
-) {
-
-    val onAwait: SelectClause1<T> = target.onAwait
-
-    @ExperimentalCoroutinesApi
-    fun getCompleted(): T = target.getCompleted();
-
-    @ExperimentalCoroutinesApi
-    fun getCompletionExceptionOrNull(): Throwable? = target.getCompletionExceptionOrNull()
-
-    fun onError(handler: (Throwable) -> Unit) = apply {
-        errorCatcher.handler = handler
-    }
-
-    suspend fun await(): T = target.await();
 
 
-}
+
+
+
+
