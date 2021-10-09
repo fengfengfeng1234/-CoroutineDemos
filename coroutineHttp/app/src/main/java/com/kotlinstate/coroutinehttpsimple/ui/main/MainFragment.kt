@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.kotlinstate.coroutinehttpsimple.HttpCanCel2Activity
 import com.kotlinstate.coroutinehttpsimple.HttpCanCelActivity
 import com.kotlinstate.coroutinehttpsimple.R
 import com.kotlinstate.coroutinehttpsimple.ui.http.apiService
@@ -63,6 +64,11 @@ class MainFragment : Fragment() {
             var intent = Intent(activity, HttpCanCelActivity::class.java);
             startActivity(intent)
         }
+        view?.findViewById<Button>(R.id.jumpActFinish2)?.setOnClickListener {
+            var intent = Intent(activity, HttpCanCel2Activity::class.java);
+            startActivity(intent)
+        }
+
         view?.findViewById<Button>(R.id.ordinaryNetworkBt)?.setOnClickListener {
             requestSingle()
         }

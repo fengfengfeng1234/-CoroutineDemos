@@ -22,6 +22,8 @@
         </activity>
 
         <activity android:name=".HttpCanCelActivity"/>
+        <activity android:name=".HttpCanCel2Activity"/>
+
     </application>
 
 
